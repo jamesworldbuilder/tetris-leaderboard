@@ -1,0 +1,11 @@
+# Ignore local dependencies, git history, and OS files
+.git
+.gitignore
+
+# Ignore other development files that don't need to be in the final image
+README.md
+cloudbuild.yaml
+.gcloudignore
+
+# The vendor directory should be installed by Composer inside the container
+vendor/
