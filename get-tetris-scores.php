@@ -7,11 +7,15 @@ header('Content-Type: application/json');
 require 'vendor/autoload.php';
 
 try {
-    // Connect to Redis using the URL from Render's environment variables
-    $redis = new Predis\Client(getenv('REDIS_URL'));
+    // Connect to Redis using a persistent connection
+    $redis = new Predis\Client(getenv('REDIS_URL'), [
+        'parameters' => [
+            'persistent' => 1,
+        ],
+    ]);
 
-    // Get top 3 scores from the 'leaderboard' sorted set
-    $scores = $redis->zrevrange('leaderboard', 0, 2, 'withscores');
+    // Get the top 3 scores from the leaderboard sorted set
+    $scores = $redis->zrevrange('tetris-leaderboard', 0, 2, 'withscores');
 
     $leaderboard = [];
     // Format the raw Redis data into a clean array
@@ -21,6 +25,10 @@ try {
 
     // Send the formatted data as a JSON response
     echo json_encode($leaderboard);
+
+    // Disconnect from the Redis server
+    // In a persistent model, this returns the connection to the pool
+    $redis->disconnect();
 
 } catch (Exception $e) {
     // Handle any connection or command errors
