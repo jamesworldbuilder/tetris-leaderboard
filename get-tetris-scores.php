@@ -21,7 +21,7 @@ try {
     $redis->connect();
 
     // Get the top 3 scores from the clean personal best list
-    $scores = $redis->zrevrange('leaderboard', 0, 2, 'withscores');
+    $scores = $redis->zrevrange('tetris-leaderboard', 0, 2, 'withscores');
 
     $leaderboard = [];
     
