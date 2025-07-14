@@ -36,7 +36,7 @@ try {
     // Increment the request counter for this IP address
     $requestCount = $redis->incr($rateLimitKey);
 
-    // If this is the first request from this IP in the time window and set an expiration on the key
+    // If this is the first request from this IP in the time window, set an expiration on the key
     if ($requestCount == 1) {
         $redis->expire($rateLimitKey, TIME_WINDOW);
     }
