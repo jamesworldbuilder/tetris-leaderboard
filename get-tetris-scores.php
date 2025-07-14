@@ -1,5 +1,5 @@
 <?php
-// CACHE-BUSTING HEADERS
+// Set cache-busting headers
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Pragma: no-cache");
 header("Expires: 0");
@@ -17,10 +17,14 @@ try {
         'parameters' => ['persistent' => 1],
     ]);
 
+    // Force the connection to re-validate, ensuring fresh data
+    $redis->connect();
+
     // Get the top 3 scores from the clean personal best list
     $scores = $redis->zrevrange('leaderboard', 0, 2, 'withscores');
 
     $leaderboard = [];
+    
     // Format the raw Redis data into a clean array
     foreach ($scores as $initials => $score) {
         $leaderboard[] = ['player' => $initials, 'score' => (int)$score];
