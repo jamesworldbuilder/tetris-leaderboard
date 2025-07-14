@@ -9,22 +9,15 @@ require 'vendor/autoload.php';
 try {
     // Connect to Redis using a persistent connection
     $redis = new Predis\Client(getenv('REDIS_URL'), [
-        'parameters' => [
-            'persistent' => 1,
-        ],
+        'parameters' => ['persistent' => 1],
     ]);
 
-    // Get the top 3 scores from the leaderboard sorted set
+    // Get the top 3 players from the clean personal best list
     $scores = $redis->zrevrange('leaderboard', 0, 2, 'withscores');
 
     $leaderboard = [];
-    
     // Format the raw Redis data into a clean array
-    foreach ($scores as $uniqueMember => $score) {
-        // This splits the player's initials and their ID
-        $parts = explode(':', $uniqueMember, 2);
-        $initials = $parts[0];
-        
+    foreach ($scores as $initials => $score) {
         $leaderboard[] = ['player' => $initials, 'score' => (int)$score];
     }
 
