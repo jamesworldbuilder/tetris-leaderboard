@@ -26,8 +26,13 @@ $playerInitials = strtoupper(trim($_POST['player']));
 $playerScore = (int)$_POST['score'];
 
 try {
-    // Connect to Redis using the URL from Render's environment variables
-    $redis = new Predis\Client(getenv('REDIS_URL'));
+    // Connect to Redis using a persistent connection
+    $redis = new Predis\Client(getenv('REDIS_URL'), [
+        'parameters' => [
+            'persistent' => 1,
+        ],
+    ]);
+
     $leaderboardKey = 'leaderboard';
 
     // Get the player's current score from the sorted set
@@ -41,6 +46,9 @@ try {
     } else {
         echo json_encode(['status' => 'not_a_high_score', 'message' => 'Score was not higher']);
     }
+
+    // Disconnect from the Redis server
+    $redis->disconnect();
 
 } catch (Exception $e) {
     // Handle any connection or command errors
