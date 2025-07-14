@@ -1,4 +1,9 @@
 <?php
+// CACHE-BUSTING HEADERS
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+header("Expires: 0");
+
 // Set CORS and JSON content headers
 header("Access-Control-Allow-Origin: *");
 header('Content-Type: application/json');
@@ -12,7 +17,7 @@ try {
         'parameters' => ['persistent' => 1],
     ]);
 
-    // Get the top 3 players from the clean personal best list
+    // Get the top 3 scores from the clean personal best list
     $scores = $redis->zrevrange('leaderboard', 0, 2, 'withscores');
 
     $leaderboard = [];
