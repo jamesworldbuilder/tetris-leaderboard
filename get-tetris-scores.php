@@ -15,11 +15,16 @@ try {
     ]);
 
     // Get the top 3 scores from the leaderboard sorted set
-    $scores = $redis->zrevrange('tetris-leaderboard', 0, 2, 'withscores');
+    $scores = $redis->zrevrange('leaderboard', 0, 2, 'withscores');
 
     $leaderboard = [];
+    
     // Format the raw Redis data into a clean array
-    foreach ($scores as $initials => $score) {
+    foreach ($scores as $uniqueMember => $score) {
+        // This splits the player's initials and their ID
+        $parts = explode(':', $uniqueMember, 2);
+        $initials = $parts[0];
+        
         $leaderboard[] = ['player' => $initials, 'score' => (int)$score];
     }
 
@@ -27,7 +32,6 @@ try {
     echo json_encode($leaderboard);
 
     // Disconnect from the Redis server
-    // In a persistent model, this returns the connection to the pool
     $redis->disconnect();
 
 } catch (Exception $e) {
