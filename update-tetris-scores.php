@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 // --- Rate Limiting Configuration ---
 const MAX_REQUESTS = 10; // Max requests
-const TIME_WINDOW = 60;  // In seconds
+const TIME_WINDOW = 2;  // In seconds
 
 try {
     // Connect to Redis using a persistent connection
