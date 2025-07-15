@@ -25,9 +25,11 @@ try {
     ]);
 
     // --- Rate Limiting Logic ---
+    // Limit database requests
     $ipAddress = $_SERVER['REMOTE_ADDR'];
     $rateLimitKey = 'rate_limit:' . $ipAddress;
     $requestCount = $redis->incr($rateLimitKey);
+    
     if ($requestCount == 1) {
         $redis->expire($rateLimitKey, TIME_WINDOW);
     }
@@ -49,7 +51,7 @@ try {
 
     $playerInitials = strtoupper(trim($_POST['player']));
     $playerScore = (int)$_POST['score'];
-    $leaderboardKey = 'leaderboard';
+    $leaderboardKey = 'tetris-leaderboard';
 
     // Get the player's current personal best score
     $oldScore = $redis->zscore($leaderboardKey, $playerInitials);
@@ -61,7 +63,7 @@ try {
         $redis->zadd($leaderboardKey, [$playerInitials => $playerScore]);
         echo json_encode(['status' => 'updated', 'message' => 'New high score saved!']);
     } else {
-        echo json_encode(['status' => 'not_a_high_score', 'message' => 'Score was not a new personal best.']);
+        echo json_encode(['status' => 'not_a_high_score', 'message' => 'Score was not a new personal best']);
     }
 
     // Disconnect from the Redis server
