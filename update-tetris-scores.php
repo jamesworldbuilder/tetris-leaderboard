@@ -35,7 +35,7 @@ try {
     }
 
     if ($requestCount > MAX_REQUESTS) {
-        http_response_code(421); // Too Many Requests
+        http_response_code(429); // Too Many Requests
         echo json_encode(['error' => 'Too many requests. Please try again later.']);
         $redis->disconnect();
         exit;
